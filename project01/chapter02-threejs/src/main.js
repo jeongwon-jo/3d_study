@@ -1,11 +1,13 @@
 import "./style.css"
 import * as THREE from "three"
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js"
-import { bufferAttribute } from "three/tsl";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 
 // antialias: 박스 끝 우글우글거리는 현상을 완화
 const renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
 // 렌더러의 사이즈를 윈도우 가로, 세로크기에 맞춤
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
@@ -15,16 +17,11 @@ const camera = new THREE.PerspectiveCamera(
   60,
   window.innerWidth/window.innerHeight, // aspect: 가로세로 비율
   0.1,
-  100
+  1000
 )
-camera.position.y = 1;
+camera.position.x = 5;
+camera.position.y = 5;
 camera.position.z = 5;
-
-const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
-directionalLight.castShadow = true;
-directionalLight.position.set(3,4,5)
-directionalLight.lookAt(0,0,0)
-scene.add(directionalLight)
 
 // ======= 회색 벽
 const floorGeometry = new THREE.PlaneGeometry(20, 20);
@@ -34,129 +31,116 @@ const floor = new THREE.Mesh(floorGeometry, floorMaterial)
 floor.rotation.x = -Math.PI / 2;
 floor.receiveShadow = true;
 floor.castShadow = true;
+floor.name = "FLOOR"
 scene.add(floor)
 
-// ===== 빨간 네모 박스
-// 가로세로높이가 1 1 1 인 box를 만들어줌
-const geometry = new THREE.BoxGeometry(1,1,1);
-// MeshStandardMaterial : 빛이 있어야 보이게됨 
-const material = new THREE.MeshStandardMaterial({color:0xff0000});
-const mesh = new THREE.Mesh(geometry, material);
-mesh.castShadow = true;
-mesh.receiveShadow = true;
-mesh.position.y = 0.5
-scene.add(mesh);
+const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
+const boxMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 })
+const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial)
+boxMesh.castShadow = true
+boxMesh.receiveShadow = true
+boxMesh.position.y = 0.5
+// scene.add(boxMesh)
 
-// ====== 노랑 캡슐모양
-const capsuleGeometry = new THREE.CapsuleGeometry(1,2,20,30);
-const capsuleMaterial = new THREE.MeshStandardMaterial({color: 0xffff00})
-const capsuleMesh = new THREE.Mesh(capsuleGeometry, capsuleMaterial)
-capsuleMesh.position.set(3,1.75, 0)
-capsuleMesh.castShadow = true
-capsuleMesh.receiveShadow = true;
-scene.add(capsuleMesh)
+// ============= directionalLight
+const directionalLight = new THREE.DirectionalLight(0xffffff, 5)
+directionalLight.castShadow = true;
+directionalLight.position.set(3, 4, 5)
+directionalLight.lookAt(0, 0, 0)
+directionalLight.shadow.mapSize.width = 4096;
+directionalLight.shadow.mapSize.height = 4096;
+directionalLight.shadow.camera.near = 0.1;
+directionalLight.shadow.camera.far = 100;
 
-// ====== 초록 실린더 모양 (원기둥)
-const cylinderGeometry = new THREE.CylinderGeometry(1,1,2)
-const cylinderMaterial = new THREE.MeshStandardMaterial({color: 0x00ff00})
-const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial)
-cylinderMesh.position.set(-3,1,0)
-cylinderMesh.castShadow = true;
-cylinderMesh.receiveShadow = true;
-scene.add(cylinderMesh)
+scene.add(directionalLight);
 
-// ====== 파랑 토러스 모양 (반지모양)
-const torusGeometry = new THREE.TorusGeometry(0.5, 0.1, 16, 100)
-const torusMaterial = new THREE.MeshStandardMaterial({color: 0x0000ff})
-const torusMesh = new THREE.Mesh(torusGeometry, torusMaterial)
-torusMesh.position.set(0, 0.5, 1)
-torusMesh.castShadow = true;
-torusMesh.receiveShadow = true;
-scene.add(torusMesh)
+window.addEventListener("resize", () => {
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.render(scene, camera);
+});
 
-// ===== 별 모양
-const starShape = new THREE.Shape()
-starShape.moveTo(0,1)
-starShape.lineTo(0.2,0.2);
-starShape.lineTo(1,0.2);
-starShape.lineTo(0.4, -0.1);
-starShape.lineTo(0.6,-1)
-starShape.lineTo(0,-0.5)
-starShape.lineTo(-0.6, -1)
-starShape.lineTo(-0.4, -0.1)
-starShape.lineTo(-1, 0.2)
-starShape.lineTo(-0.2,0.2)
+const gltfLoader = new GLTFLoader()
+const gltf = await gltfLoader.loadAsync("/dancer.glb");
 
-const shapeGeometry = new THREE.ShapeGeometry(starShape)
-const shapeMaterial = new THREE.MeshStandardMaterial({color: 0xff00ff})
-const shapeMesh = new THREE.Mesh(shapeGeometry, shapeMaterial)
-shapeMesh.position.set(0,1,2)
-scene.add(shapeMesh)
+const character = gltf.scene;
+const animationClips = gltf.animations
+character.position.y = 0.8;
+character.scale.set(0.01, 0.01, 0.01);
+character.castShadow = true;
+character.receiveShadow = true;
+character.traverse((obj) => {
+  if (obj.isMesh) { 
+    obj.castShadow = true;
+    obj.receiveShadow = true;
+  }
+})
 
-// 별 입체로 만들기
-const extrudeSettings = {
-  steps: 1,
-  depth: 0.1,
-  bevelEnabled: true,
-  bevelThickness: 0.1,
-  bevelSize: 0.3,
-  bevelSegments: 100,
-}
+scene.add(character);
 
-const extrudeGeometry = new THREE.ExtrudeGeometry(starShape, extrudeSettings)
-const extrudeMaterial = new THREE.MeshStandardMaterial({color: 0x0ddaaf})
-const extrudeMesh = new THREE.Mesh(extrudeGeometry, extrudeMaterial)
-extrudeMesh.position.set(2,1.3,2)
-extrudeMesh.castShadow = true;
-extrudeMesh.receiveShadow = true;
-scene.add(extrudeMesh)
-
-// 구모양의 스피어
-const sphereGeometry = new THREE.SphereGeometry(1,32,32)
-const sphereMaterial = new THREE.MeshStandardMaterial({color: 0x98daaf})
-const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial)
-sphereMesh.position.set(0,1,-3)
-// scene.add(sphereMesh)
-
-const numPoints = 1000
-const positions = new Float32Array(numPoints * 3);
-
-for(let i=0;i<numPoints;i++) {
-  const x = (Math.random() - 0.5) * 1
-  const y = (Math.random() - 0.5) * 1
-  const z = (Math.random() - 0.5) * 1
-
-  positions[i*3] = x;
-  positions[i*3 + 1] = y;
-  positions[i*3 + 2] = z;
-;}
-
-const bufferGeometry = new THREE.BufferGeometry();
-bufferGeometry.setAttribute(
-  "position",
-  new THREE.BufferAttribute(positions, 3),
-)
-
-const pointsMaterial = new THREE.PointsMaterial({color: 0xffff00, size: 0.05})
-const point = new THREE.Points(sphereGeometry, pointsMaterial)
-point.position.set(0,0,-5)
-scene.add(point)
-
+const mixer = new THREE.AnimationMixer(character)
+const action = mixer.clipAction(animationClips[3]);
+action.setLoop(THREE.LoopPingPong)
+action.play()
 
 // OrbitControls: 마우스를 이용해 카메라를 컨트롤할 수 있게 함
 const orbitControls = new OrbitControls(camera, renderer.domElement)
-orbitControls.update();
+// enableDamping : 부드럽게
+orbitControls.enableDamping = true;
+// 기본 0.05, 더 작아질수록 부드럽게
+orbitControls.dampingFactor = 0.03;
 
-window.addEventListener("resize", () => {
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix()
-  renderer.render(scene, camera)
+
+const newPosition = new THREE.Vector3(0,1,0)
+const rayCaster = new THREE.Raycaster()
+
+renderer.domElement.addEventListener("pointerdown", (e) => {
+  const x = (e.clientX / window.innerWidth) * 2 - 1;
+  const y = -((e.clientY / window.innerHeight) * 2 - 1);
+
+  rayCaster.setFromCamera(new THREE.Vector2(x, y), camera)
+  const intersects = rayCaster.intersectObjects(scene.children)
+  // console.log(intersects)
+
+  const intersectFloor = intersects.find(i => i.object.name === "FLOOR")
+  console.log(intersectFloor);
+  newPosition.copy(intersectFloor.point)
+  newPosition.y = 1;
 })
 
+// PolarAngle : 수직 앵글
+// 최대값 90도
+orbitControls.maxPolarAngle = Math.PI / 2;
+// 최소값 45도
+orbitControls.minPolarAngle = Math.PI / 4;
+// AzimuthAngle : 수평 앵글
+orbitControls.maxAzimuthAngle = Math.PI / 2;
+orbitControls.minAzimuthAngle = -Math.PI / 2;
+
+const clock = new THREE.Clock()
+const targetVector = new THREE.Vector3()
+
 const render = () => {
-  renderer.render(scene, camera)
+  character.lookAt(newPosition)
+  targetVector.subVectors(newPosition, character.position).normalize().multiplyScalar(0.01)
+
+  if (
+		Math.abs(character.position.x - newPosition.x) >= 1 ||
+		Math.abs(character.position.z - newPosition.z) >= 1
+  ) {
+    character.position.x += targetVector.x;
+    character.position.z += targetVector.z;
+    action.stop()
+  } else {
+    action.play()
+  }
+  renderer.render(scene, camera);
   requestAnimationFrame(render);
+  orbitControls.update();
+  if (mixer) {
+    mixer.update(clock.getDelta());
+  }
 }
 
 render();

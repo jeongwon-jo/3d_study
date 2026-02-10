@@ -91,7 +91,6 @@ orbitControls.enableDamping = true;
 // 기본 0.05, 더 작아질수록 부드럽게
 orbitControls.dampingFactor = 0.03;
 
-
 const newPosition = new THREE.Vector3(0,1,0)
 const rayCaster = new THREE.Raycaster()
 

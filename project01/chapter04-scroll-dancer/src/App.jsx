@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import { MainCanvas } from './components/MainCanvas';
+import { FixedDOM } from "./components/dom/FixedDom";
 function App() {
 
   return (
 		<Wrapper>
 			<MainCanvas />
+			<FixedDOM />
 		</Wrapper>
 	);
 }

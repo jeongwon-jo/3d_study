@@ -7,12 +7,12 @@ export function CityName (props){
 
     return(
         <motion.group
-            initial={{y:0.2}}
-            animate={{y:0.3}}
+            initial={{y:0.15}}
+            animate={{y:0.25}}
         >
             <Html
                 center
-                position={[0.15,0.2,0]}
+                position={[0,0.15,0]}
             >
                 <div className="cityName">
                     {name}

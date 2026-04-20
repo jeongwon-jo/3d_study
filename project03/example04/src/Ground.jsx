@@ -1,14 +1,11 @@
-import React from 'react'
 import { usePlane } from "@react-three/cannon";
-import DummyBall from './dummy/DummyBall';
-import DummyBox from './dummy/DummyBox';
-import DummyWall from './dummy/DummyWall';
-import { Tree } from './components/Tree';
 import { Ball } from './components/Ball';
+import Banner from "./components/Banner";
 import HowToPlay from './components/HowToPlay';
+import { RoadSign } from "./components/RoadSign";
+import { Tree } from './components/Tree';
 
 export function Ground() {
-
   const [meshRef] = usePlane(
     () => ({ args: [15, 15], mass: 1, type: 'Static', rotation: [-Math.PI/2,0,0]}),
   )
@@ -29,10 +26,9 @@ export function Ground() {
       <Ball position={[0,0.2,-2]}/>
 
       <HowToPlay/>
-      <DummyWall position={[5,0.5,0]} args={[1,1,10]} />
-      <DummyWall position={[0,0.5,5]} args={[10,1,1]} />
-      <DummyWall position={[0,0.5,-5]} args={[10,1,1]} />
-      <DummyWall position={[-5,0.5,0]} args={[1,1,10]} />
+      <RoadSign position={[0,0.5,3]} />
+
+      <Banner position={[0,1,-6]} />
     </group>
   )
 }

@@ -1,15 +1,12 @@
-import { useBox, useCompoundBody, useRaycastVehicle } from "@react-three/cannon";
-import { useMemo, useRef } from "react";
-import DummyCarBody from "./dummy/DummyCarBody";
-import DummyWheel from "./dummy/DummyWheel";
-import { useControls } from "leva";
-import { useWheels } from "./utils/useWheels";
-import { useVehicleControls} from "./utils/useVehicleControls";
+import { useCompoundBody, useRaycastVehicle } from "@react-three/cannon";
 import { useFrame } from "@react-three/fiber";
-import useFollowCam from "./utils/useFollowCam";
+import { useMemo, useRef } from "react";
 import { Vector3 } from "three";
 import { CarBody } from "./components/CarBody";
 import { Wheel } from "./components/Wheel";
+import useFollowCam from "./utils/useFollowCam";
+import { useVehicleControls } from "./utils/useVehicleControls";
+import { useWheels } from "./utils/useWheels";
 
 const Car = () => {
     const { pivot } = useFollowCam();
@@ -29,6 +26,7 @@ const Car = () => {
   
     const [chassisBody, chassisApi] = useCompoundBody(
       () => ({
+        collisionFilterGroup: 5,
         position,
         mass: mass,
         rotation: [0,Math.PI,0],
@@ -72,7 +70,7 @@ const Car = () => {
 
     return(
         <group ref={vehicle}>
-            <group ref={chassisBody}>
+            <group ref={chassisBody} name="chassisBody">
                 <CarBody />
             </group>
             <Wheel wheelRef={wheels[0]} radius={wheelRadius}/>

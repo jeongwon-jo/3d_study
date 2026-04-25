@@ -1,19 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Html, useGLTF } from '@react-three/drei'
 import { useBox } from '@react-three/cannon'
+import { Html, useGLTF } from '@react-three/drei'
 import { motion } from "framer-motion-3d"
+import { useEffect, useRef, useState } from 'react'
 
 useGLTF.preload('/assets/models/tree.glb')
 
-export function Tree(props) {
-  const { nodes, materials } = useGLTF('/assets/models/tree.glb')
+export function Tree({position, model, material}) {
   const [info, setInfo] = useState(false)
 
   const [ref] = useBox(()=> ({
     args: [0.3,1,0.3],
     type: "Static",
     onCollide: handleCollision,
-    ...props
+    position
   }),useRef(null))
 
   const handleCollision = (e) => {
@@ -33,10 +32,13 @@ export function Tree(props) {
 
   return (
     <group ref={ref}>
-      <motion.mesh 
+      <motion.group 
         animate={{ scale: [0, 0.2], y: [-1, 0]}}
         transition={{ delay: 1, duration: 0.3,}}
-        scale={0.2} geometry={nodes.tree.geometry} material={materials['Material.003']} position={[0, 0, 0]} rotation={[-1.555, 0, 0]} />
+        scale={0.2} position={[0, 0, 0]} rotation={[-1.555, 0, 0]}>
+        <model.TreeMesh material={material} />
+      </motion.group>
+      
       {info && <Html center><div className="information">이것은 나무 입니다!</div></Html>}
     </group>
   )

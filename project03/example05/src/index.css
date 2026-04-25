@@ -44,3 +44,11 @@ body, html, #root {
   padding: 0;
   margin-top: 0.5rem;
 }
+
+.calls {
+  background: rgba(0,0,0, 0.6);
+  border-radius: 12px;
+  color: white;
+  padding: 5px 20px;
+  font-size: 22px;
+}

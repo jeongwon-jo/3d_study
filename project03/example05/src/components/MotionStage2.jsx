@@ -7,7 +7,7 @@ import Picture from "./Picture";
 useGLTF.preload(`/assets/models/popup.glb`)
 
 export const MotionStage2 = ({position}) => {
-    const texture = useTexture(`/assets/images/info.jpg`);
+    const texture = useTexture(`/assets/images/motion_2.webp`);
     
     const x = position[0];
     const y = position[1];

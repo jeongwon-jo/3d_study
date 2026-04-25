@@ -1,6 +1,6 @@
 import { useBox } from '@react-three/cannon'
 import { useFrame } from '@react-three/fiber'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { stage2 } from '../utils/atom'
 

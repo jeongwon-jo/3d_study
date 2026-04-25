@@ -19,3 +19,24 @@ body, html, #root {
   white-space: nowrap;
   font-size: 22px;
 }
+
+.information.enter {
+  width: 30px;
+  padding: 10px;
+  background: white;
+  color: black;
+  white-space: nowrap;
+  display: block;
+  font-size: 13px;
+}
+
+.information.enter img {
+  width: 100%;
+  height: auto;
+}
+
+.information.enter p {
+  margin: 0;
+  padding: 0;
+  margin-top: 0.5rem;
+}

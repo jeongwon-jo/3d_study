@@ -1,7 +1,7 @@
-import "./style.css"
-import * as THREE from "three"
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
+import "./style.css";
 
 // antialias: 박스 끝 우글우글거리는 현상을 완화
 const renderer = new THREE.WebGLRenderer({antialias: true});
@@ -52,7 +52,7 @@ directionalLight.shadow.camera.near = 0.1;
 directionalLight.shadow.camera.far = 100;
 
 scene.add(directionalLight);
-const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight,1)
+// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight,1)
 // scene.add(directionalLightHelper)
 
 
@@ -82,7 +82,7 @@ character.traverse((obj) => {
 scene.add(character);
 
 const mixer = new THREE.AnimationMixer(character)
-const action = mixer.clipAction(animationClips[3]);
+const action = mixer.clipAction(animationClips[1]);
 action.setLoop(THREE.LoopRepeat)
 // action.setDuration(10)
 // action.setEffectiveTimeScale(2)

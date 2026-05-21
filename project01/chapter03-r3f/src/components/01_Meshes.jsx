@@ -1,14 +1,7 @@
 import {
-  Box,
-  Circle,
-  Cone,
-  Cylinder,
   Plane,
-  Sphere,
-  Torus,
-  TorusKnot,
+  TorusKnot
 } from "@react-three/drei";
-import * as THREE from "three"
 export const Meshes = () => {
   return (
     <>

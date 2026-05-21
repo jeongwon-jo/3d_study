@@ -1,9 +1,9 @@
-import { useAnimations, useGLTF, useScroll, Box, Circle, Points, useTexture, PositionalAudio } from "@react-three/drei";
+import { Box, Circle, Points, useAnimations, useGLTF, useScroll, useTexture } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
-import { useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import * as THREE from "three";
 import { useAppStore } from "../stores";
-import * as THREE from "three"
 let timeline;
 const colors =  {
   boxMaterialColor: "#DC4F00",
@@ -50,11 +50,8 @@ export const Dancer = () => {
 
     boxRef.current.material.color = new THREE.Color(colors.boxMaterialColor)
 
-    if(rotateFinished) {
-      setCurrentAnimation("breakdancingEnd")
-    } else {
-      setCurrentAnimation("wave")
-    }
+    const next = rotateFinished ? "breakdancingEnd" : "wave"
+    if (next !== currentAnimation) setCurrentAnimation(next)
   })
 
   useEffect(() => {
@@ -258,10 +255,7 @@ export const Dancer = () => {
         <Points positions={positions.slice(positions.length*2 / 3)}>
           <pointsMaterial ref={starGroupRef03} size={0.5} color={new THREE.Color("#DC4F00")} sizeAttenuation depthWrite alphaMap={texture} transparent alphaTest={0.001}/>
         </Points>
-        <PositionalAudio position={[-24,0,0]} autoplay 
-        // url="/audio/bgm.mp3"
-        distance={50} loop
-        />
+        {/* <PositionalAudio position={[-24,0,0]} autoplay url="/audio/bgm.mp3" distance={50} loop /> */}
 			</>
 		);
   }

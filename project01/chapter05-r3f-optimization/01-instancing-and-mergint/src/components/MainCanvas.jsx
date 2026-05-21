@@ -1,8 +1,6 @@
-import {Canvas} from "@react-three/fiber"
-import { Color } from "three"
+import { OrbitControls } from "@react-three/drei"
+import { Canvas } from "@react-three/fiber"
 import * as THREE from "three"
-import {OrbitControls} from "@react-three/drei"
-import { InstancedBoxes } from "./InstancedBoxes"
 import { MergedMesh } from "./MergedMesh"
 
 export const MainCanvas = () => {

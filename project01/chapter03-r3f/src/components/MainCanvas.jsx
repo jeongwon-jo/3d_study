@@ -1,14 +1,10 @@
-import { Canvas,  } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { Physics } from "@react-three/cannon";
+import { Canvas, } from "@react-three/fiber";
+import * as THREE from "three";
 import { Color } from "three";
-import { Meshes } from "./Meshes";
-import { Lights } from "./Lights";
-import * as THREE from "three"
 import { Controls } from "./Controls";
-import { GLBModel } from "./GLBModel";
-import { Dancer } from "./Dancer";
-import { PostProcessor } from "./PostProcessor";
-import {Physics} from "@react-three/cannon"
+import { Lights } from "./Lights";
+import { Meshes } from "./Meshes";
 
 export const MainCanvas = () => {
   return (

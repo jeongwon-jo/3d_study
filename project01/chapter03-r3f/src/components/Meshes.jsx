@@ -1,9 +1,7 @@
 import { useBox, useSphere } from "@react-three/cannon";
 import {
 	Box,
-  Plane,
-  Sphere,
-  TorusKnot
+	Sphere
 } from "@react-three/drei";
 import { useEffect } from "react";
 export const Meshes = () => {
@@ -19,7 +17,6 @@ export const Meshes = () => {
 		},
 		onCollide: () => {
 			console.log("바닥에 충돌");
-			
 		}
 	}))
 
